@@ -438,6 +438,56 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'zbirenbaum/copilot-cmp',
+    config = function()
+      require('copilot_cmp').setup()
+    end,
+  },
+
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    branch = 'main',
+    cmd = 'CopilotChat',
+opts = function()
+  local user = vim.env.USER or "User"
+  user = user:sub(1, 1):upper() .. user:sub(2)
+  return {
+    auto_insert_mode = true,
+    question_header = "  " .. user .. " ",
+    answer_header = "  Copilot ",
+    window = {
+      width = 0.4,
+    },
+  }
+end
+},
+
+  -- NOTE: Plugins can also be added with a link (or for a github repo: 'owner/repo' link).
+  {
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    build = ':Copilot auth',
+    event = 'BufReadPost',
+    opts = {
+      suggestion = {
+        enabled = not vim.g.ai_cmp,
+        auto_trigger = true,
+        hide_during_completion = vim.g.ai_cmp,
+        keymap = {
+          accept = false, -- handled by nvim-cmp / blink.cmp
+          next = '<M-]>',
+          prev = '<M-[>',
+        },
+      },
+      panel = { enabled = true },
+      filetypes = {
+        markdown = true,
+        help = true,
+      },
+    },
+  },
+
   -- LSP Plugins
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -833,6 +883,7 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
+          { name = 'copilot', group_index = 2 },
         },
       }
     end,
